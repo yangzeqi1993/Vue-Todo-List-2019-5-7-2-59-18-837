@@ -13,9 +13,9 @@
         <br/>
 
         <ol>
-            <li v-for="n in num" v-bind:key="n" :class="{'checked': checkedDisplay[n-1]===true}">
-                <label><input name="done-todo" type="checkbox" class="done-todo" v-model="checkedDisplay[n-1]"></label>
-                <span contenteditable="true" class="done-todo">{{message[n-1]}}</span>
+            <li v-for="index in getMessagesNum()" v-bind:key="index" :class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
+                <label><input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]"></label>
+                <span contenteditable="true" class="done-todo">{{$store.getters.getMessagesByIndex(index)}}</span>
             </li>
         </ol>
 
@@ -42,28 +42,29 @@
     export default {
 
         name: 'List',
-
         data(){
-            return {
-                num: 0,
-                message:[],
-                checkedDisplay:[]
+            return{
+                isChecked: false
             }
         },
-
         methods:{
 
             commit(){
-                this.num++;
-                this.message.push(document.getElementById("ListItem").value);
-                this.checkedDisplay.push(false);
+                let message = document.getElementById("ListItem").value;
+                this.$store.commit('pushMessages',message);
+                this.$store.commit('pushButtons',false);
             },
 
             clear(){
-                this.num = 0;
-                this.message = [];
-                this.checkedDisplay = [];
+                this.$store.commit('clearMessages');
+                this.$store.commit('clearButtons');
+                document.getElementById("ListItem").value = "";
+            },
+
+            getMessagesNum(){
+                return this.$store.getters.getMessages().length;
             }
+
         }
 
     }
