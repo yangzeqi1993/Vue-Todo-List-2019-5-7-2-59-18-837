@@ -13,8 +13,10 @@
         <br/>
 
         <ol>
-            <li v-for="index in getMessagesNum()" v-show="isShow()[index-1]"
-                v-bind:key="index" :class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
+            <li v-for="index in getMessagesNum()"
+                v-show="isShow()[index-1]"
+                v-bind:key="index"
+                v-bind:class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
                 <label><input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]"></label>
                 <span contenteditable="true" class="done-todo">{{$store.getters.getMessagesByIndex(index)}}</span>
             </li>
@@ -23,13 +25,13 @@
         <div>
             <ul id="filters">
                 <li>
-                    <a  href="#"  data-filter="complete" v-on:click="showAllMessages">ALL</a>
+                    <a href="#" data-filter="complete" v-on:click="showAllMessages">ALL</a>
                 </li>
                 <li>
-                    <a href="#"  data-filter="complete" v-on:click="showNotSelectedMessages">Active</a>
+                    <a href="#" data-filter="complete" v-on:click="showNotSelectedMessages">Active</a>
                 </li>
                 <li>
-                    <a  href="#" data-filter="complete" v-on:click="showSelectedMessages">Complete</a>
+                    <a href="#" data-filter="complete" v-on:click="showSelectedMessages">Complete</a>
                 </li>
             </ul>
 
@@ -74,7 +76,7 @@
 
             isShow(){
                 let allShow = [];
-                for(let i=0; i<20; i++){
+                for(let i=0; i<this.getMessagesNum(); i++){
                     allShow.push(true);
                 }
                 switch (this.selectShow) {
@@ -83,7 +85,7 @@
                         return allShow;
                     case "Active":
                         return this.$store.getters.getButtons();
-                    case"Complete":
+                    case "Complete":
                         allShow = [];
                         for(let i=0; i<this.$store.getters.getButtons().length; i++){
                             allShow.push(!this.$store.getters.getButtons()[i]);
