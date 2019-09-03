@@ -17,7 +17,9 @@
                 v-show="isShow()[index-1]"
                 v-bind:key="index"
                 v-bind:class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
-                <label><input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]"></label>
+                <label>
+                    <input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]">
+                </label>
                 <span contenteditable="true" class="done-todo">{{$store.getters.getMessagesByIndex(index)}}</span>
             </li>
         </ol>
@@ -25,13 +27,13 @@
         <div>
             <ul id="filters">
                 <li>
-                    <a href="#" data-filter="complete" v-on:click="showAllMessages">ALL</a>
+                    <a v-on:click="showAllMessages">ALL</a>
                 </li>
                 <li>
-                    <a href="#" data-filter="complete" v-on:click="showNotSelectedMessages">Active</a>
+                    <a v-on:click="showNotSelectedMessages">Active</a>
                 </li>
                 <li>
-                    <a href="#" data-filter="complete" v-on:click="showSelectedMessages">Complete</a>
+                    <a v-on:click="showSelectedMessages">Complete</a>
                 </li>
             </ul>
 
@@ -81,20 +83,20 @@
                 }
                 switch (this.selectShow) {
                     case "all":
-                        window.console.log(allShow);
                         return allShow;
                     case "Active":
-                        return this.$store.getters.getButtons();
-                    case "Complete":
                         allShow = [];
                         for(let i=0; i<this.$store.getters.getButtons().length; i++){
                             allShow.push(!this.$store.getters.getButtons()[i]);
                         }
                         return allShow;
-                    default :
+                    case "Complete":
+                        return this.$store.getters.getButtons();
+                    default:
                         return allShow;
                 }
             }
+
 
         }
 
@@ -209,6 +211,7 @@
     a{
         margin: 3px;
         padding: 3px 7px;
+        cursor:pointer;
     }
     #filters li {
         display: inline;
