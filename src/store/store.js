@@ -4,8 +4,8 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const initState = {
-    messages: [],
-    buttons: []
+    messages:[],
+    buttons:[]
 };
 
 const store = new Vuex.Store({
@@ -19,6 +19,11 @@ const store = new Vuex.Store({
         getMessagesByIndex: function (state) {
             return function (index) {
                 return state.messages[index - 1];
+            };
+        },
+        getButtons(state){
+            return function () {
+                return state.buttons;
             };
         },
         getButtonsByIndex: function (state) {

@@ -13,7 +13,8 @@
         <br/>
 
         <ol>
-            <li v-for="index in getMessagesNum()" v-bind:key="index" :class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
+            <li v-for="index in getMessagesNum()" v-show="isShow()[index-1]"
+                v-bind:key="index" :class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
                 <label><input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]"></label>
                 <span contenteditable="true" class="done-todo">{{$store.getters.getMessagesByIndex(index)}}</span>
             </li>
@@ -22,13 +23,13 @@
         <div>
             <ul id="filters">
                 <li>
-                    <a href="#" data-filter="all">ALL</a>
+                    <a  href="#"  data-filter="complete" v-on:click="showAllMessages">ALL</a>
                 </li>
                 <li>
-                    <a href="#" data-filter="active">Active</a>
+                    <a href="#"  data-filter="complete" v-on:click="showNotSelectedMessages">Active</a>
                 </li>
                 <li>
-                    <a href="#" data-filter="complete" v-on:click="clear">Complete</a>
+                    <a  href="#" data-filter="complete" v-on:click="showSelectedMessages">Complete</a>
                 </li>
             </ul>
 
@@ -44,7 +45,7 @@
         name: 'List',
         data(){
             return{
-                isChecked: false
+                selectShow: "all"
             }
         },
         methods:{
@@ -55,14 +56,42 @@
                 this.$store.commit('pushButtons',false);
             },
 
-            clear(){
-                this.$store.commit('clearMessages');
-                this.$store.commit('clearButtons');
-                document.getElementById("ListItem").value = "";
-            },
-
             getMessagesNum(){
                 return this.$store.getters.getMessages().length;
+            },
+
+            showAllMessages(){
+                this.selectShow = "all";
+            },
+
+            showNotSelectedMessages(){
+                this.selectShow = "Active";
+            },
+
+            showSelectedMessages(){
+                this.selectShow = "Complete";
+            },
+
+            isShow(){
+                let allShow = [];
+                for(let i=0; i<20; i++){
+                    allShow.push(true);
+                }
+                switch (this.selectShow) {
+                    case "all":
+                        window.console.log(allShow);
+                        return allShow;
+                    case "Active":
+                        return this.$store.getters.getButtons();
+                    case"Complete":
+                        allShow = [];
+                        for(let i=0; i<this.$store.getters.getButtons().length; i++){
+                            allShow.push(!this.$store.getters.getButtons()[i]);
+                        }
+                        return allShow;
+                    default :
+                        return allShow;
+                }
             }
 
         }
