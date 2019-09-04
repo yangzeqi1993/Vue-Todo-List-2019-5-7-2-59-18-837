@@ -1,7 +1,11 @@
 <template>
     <li class="massage">
         <label>
-            <input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.list[index-1].status">
+            <input name="done-todo"
+                   type="checkbox"
+                   class="done-todo"
+                   v-model="status"
+                   v-on:change="updateStatus">
         </label>
         <span contenteditable="true" class="done-todo">{{$store.getters.getListByIndex(index).message}}</span>
     </li>
@@ -11,7 +15,22 @@
     export default {
         name: 'Messages',
         props:{
-            index: Number
+            index: Number,
+            message: String
+        },
+        data(){
+            return{
+                status: false
+            }
+        },
+        methods:{
+            updateStatus(){
+                this.$store.dispatch('updateMessageStatusToDatabase',{
+                    id: this.index,
+                    message: this.$store.getters.getListByIndex(this.index).message,
+                    status: this.status
+                });
+            }
         }
     }
 </script>
@@ -28,8 +47,5 @@
         margin: 0 0 5px 0;
         padding: 8px;
         text-align: left;
-    }
-    .massage{
-
     }
 </style>

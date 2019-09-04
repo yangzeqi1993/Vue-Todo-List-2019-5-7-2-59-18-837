@@ -29,6 +29,7 @@
 <style scoped>
     #myinfo{
         margin-top: -200px;
+        text-align: center;
     }
     .myUserInfoShow{
         width: 100px;

@@ -25,5 +25,11 @@ yarn run test
 yarn run lint
 ```
 
+###  Run  json-server
+```
+json-server --watch -c json-server.json testdb.json
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+

@@ -25,24 +25,59 @@ const store = new Vuex.Store({
     mutations:{
         pushList(state,listItem){
             state.list.push(listItem);
+        },
+        updateList(state,listItem){
+            let oldList = state.list;
+            oldList[listItem.id-1] = listItem;
+            state.list = [];
+            for(let i=0; i<oldList.length; i++){
+                state.list.push(oldList[i]);
+            }
         }
     },
     actions: {
-        addMessage(context,listItem){
+        addMessageToDatabase(context,listItem){
             axios.post('http://localhost:5000/list',listItem)
+                .then(function (response) {
+                    //context.commit('pushList',response.data);
+                    store.dispatch('addListFromDatabase',response.data.id);
+                })
+                .catch(function (error) {
+                    // handle error
+                    window.console.log(error);
+                });
+        },
+        addListFromDatabase(context,id){
+            axios.get('http://localhost:5000/list/'+id)
                 .then(function (response) {
                     context.commit('pushList',response.data);
                 })
                 .catch(function (error) {
                     // handle error
-                    context.commit('setMessages',{msg1:"fail...",msg2:"fail..."});
                     window.console.log(error);
-                    window.console.log("is catch");
+                });
+        },
+        updateMessageStatusToDatabase(context,listItem){
+            axios.put('http://localhost:5000/list/'+listItem.id,listItem)
+                .then(function (response) {
+                    store.dispatch('updateMessageStatusFromDatabase',response.data);
                 })
-                .finally(function () {
-                    window.console.log("is finally");
+                .catch(function (error) {
+                    // handle error
+                    window.console.log(error);
+                });
+        },
+        updateMessageStatusFromDatabase(context,listItem){
+            axios.put('http://localhost:5000/list/'+listItem.id,listItem)
+                .then(function (response) {
+                    context.commit('updateList',response.data);
+                })
+                .catch(function (error) {
+                    // handle error
+                    window.console.log(error);
                 });
         }
+
     }
 }) ;
 

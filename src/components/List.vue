@@ -59,7 +59,7 @@
 
             commit(){
                 let message = document.getElementById("ListItem").value;
-                this.$store.dispatch('addMessage',{
+                this.$store.dispatch('addMessageToDatabase',{
                     id: this.index,
                     message: message,
                     status: false
@@ -108,9 +108,7 @@
                 }
             }
 
-
         }
-
     }
 </script>
 
@@ -126,14 +124,8 @@
         background: mediumturquoise;
         border-radius: 5px;
     }
-    h2 {
-        display: block;
-        font-size: 1.5em;
-        margin-block-start: 0.83em;
-        margin-block-end: 0.83em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        font-weight: bold;
+    em{
+        text-align: left;
     }
     p {
         display: block;
