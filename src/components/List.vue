@@ -1,27 +1,25 @@
 <template>
-    <div class="list">
+    <div id="list">
+
         <div>
             <h2>Jquery To Do List</h2>
             <p>
                 <em>Simple Todo List with adding and filter by diff status.</em>
             </p>
         </div>
+
         <div>
             <label><input class="input-text" type="text" name="ListItem" id="ListItem"></label>
             <div id="button" v-on:click="commit">Add</div>
         </div>
+
         <br/>
 
         <ol>
-            <li v-for="index in getMessagesNum()"
-                v-show="isShow()[index-1]"
-                v-bind:key="index"
-                v-bind:class="{'checked': $store.getters.getButtonsByIndex(index)===true}">
-                <label>
-                    <input name="done-todo" type="checkbox" class="done-todo" v-model="$store.state.buttons[index-1]">
-                </label>
-                <span contenteditable="true" class="done-todo">{{$store.getters.getMessagesByIndex(index)}}</span>
-            </li>
+            <Messages v-for="index in getMessagesNum()"
+                      v-bind:key="index" v-show="isShow()[index-1]"
+                      v-bind:index="index"
+                      v-bind:class="{'checked': $store.getters.getListByIndex(index).status===true}"/>
         </ol>
 
         <div>
@@ -36,17 +34,22 @@
                     <a v-on:click="showSelectedMessages">Complete</a>
                 </li>
             </ul>
-
         </div>
+
     </div>
 </template>
 
 
 
 <script>
+    import Messages from  './Messages.vue'
+
     export default {
 
         name: 'List',
+        components: {
+            Messages
+        },
         data(){
             return{
                 selectShow: "all"
@@ -56,12 +59,15 @@
 
             commit(){
                 let message = document.getElementById("ListItem").value;
-                this.$store.commit('pushMessages',message);
-                this.$store.commit('pushButtons',false);
+                this.$store.dispatch('addMessage',{
+                    id: this.index,
+                    message: message,
+                    status: false
+                });
             },
 
             getMessagesNum(){
-                return this.$store.getters.getMessages().length;
+                return this.$store.getters.getList().length;
             },
 
             showAllMessages(){
@@ -86,12 +92,17 @@
                         return allShow;
                     case "Active":
                         allShow = [];
-                        for(let i=0; i<this.$store.getters.getButtons().length; i++){
-                            allShow.push(!this.$store.getters.getButtons()[i]);
+                        for(let i=0; i<this.$store.getters.getList().length; i++){
+                            allShow.push(!this.$store.getters.getList()[i].status);
                         }
                         return allShow;
                     case "Complete":
-                        return this.$store.getters.getButtons();
+                        allShow = [];
+                        for(let i=0; i<this.$store.getters.getList().length; i++){
+                            allShow.push(this.$store.getters.getList()[i].status);
+                        }
+                        return allShow;
+                        // return this.$store.getters.getList().status;
                     default:
                         return allShow;
                 }
@@ -106,6 +117,15 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    #list{
+        padding: 20px;
+        width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: -230px;
+        background: mediumturquoise;
+        border-radius: 5px;
+    }
     h2 {
         display: block;
         font-size: 1.5em;
@@ -122,16 +142,8 @@
         margin-inline-start: 0px;
         margin-inline-end: 0px;
     }
-    i, cite, em, var, address, dfn {
+    li, cite, em, var, address, dfn {
         font-style: italic;
-    }
-    .list{
-        padding: 20px;
-        width: 400px;
-        margin: 0 auto;
-        margin-top: 40px;
-        background: white;
-        border-radius: 5px;
     }
     .input-text {
         width: 70%;
@@ -185,7 +197,6 @@
         padding: 5px;
         color: #000;
         display: list-item;
-        text-align: -webkit-match-parent;
     }
     ol li {
         padding: 5px;
@@ -229,10 +240,7 @@
         margin-inline-end: 0px;
         padding-inline-start: 40px;
     }
-    .done-todo{
-        cursor:pointer;
-        margin: 5px 5px 2px 0;
-    }
+
     span{
         word-break: break-all;
         width: 70%;

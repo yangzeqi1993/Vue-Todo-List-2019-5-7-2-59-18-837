@@ -1,25 +1,27 @@
 <template>
   <div id="app">
-    <List/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import List from './components/List.vue'
+import Main from './components/Main.vue'
 
 export default {
   name: 'app',
   components: {
-    List
+    Main
   }
 }
 </script>
 
 <style>
 #app {
-  font: normal normal 13px/16px "Open Sans", sans-serif;
-  background: #ccc;
-  display: block;
-  margin: 8px;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>

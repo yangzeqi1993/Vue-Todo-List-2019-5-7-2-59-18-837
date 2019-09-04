@@ -1,58 +1,47 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex);
 
 const initState = {
-    messages:[],
-    buttons:[]
+    list:[]
 };
 
 const store = new Vuex.Store({
     state: initState,
     getters: {
-        getMessages(state){
+        getList(state){
             return function () {
-                return state.messages;
+                return state.list;
             };
         },
-        getMessagesByIndex: function (state) {
+        getListByIndex: function (state) {
             return function (index) {
-                return state.messages[index - 1];
-            };
-        },
-        getButtons(state){
-            return function () {
-                return state.buttons;
-            };
-        },
-        getButtonsByIndex: function (state) {
-            return function (index) {
-                return state.buttons[index - 1];
+                return state.list[index - 1];
             };
         }
     },
     mutations:{
-        pushMessages(state,message){
-            state.messages.push(message);
-        },
-        clearMessages(state){
-            state.messages = [];
-        },
-
-        updateButtonsByIndex(state,data){
-            let oldButtons = state.buttons;
-            oldButtons[data.index - 1] = data.value;
-            state.buttons = [];
-            for(let i=0; i<oldButtons.length; i++){
-                state.buttons.push(oldButtons[i]);
-            }
-        },
-        pushButtons(state,button){
-            state.buttons.push(button);
-        },
-        clearButtons(state){
-            state.buttons = [];
+        pushList(state,listItem){
+            state.list.push(listItem);
+        }
+    },
+    actions: {
+        addMessage(context,listItem){
+            axios.post('http://localhost:5000/list',listItem)
+                .then(function (response) {
+                    context.commit('pushList',response.data);
+                })
+                .catch(function (error) {
+                    // handle error
+                    context.commit('setMessages',{msg1:"fail...",msg2:"fail..."});
+                    window.console.log(error);
+                    window.console.log("is catch");
+                })
+                .finally(function () {
+                    window.console.log("is finally");
+                });
         }
     }
 }) ;
